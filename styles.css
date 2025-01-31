@@ -1,15 +1,15 @@
-/* Estilos Generales */
 body {
     font-family: Arial, sans-serif;
     background-color: #000000; /* Fondo negro */
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     min-height: 100vh;
     text-align: center;
-    color: #FFFFFF; /* Texto blanco */
+    color: white; /* Texto blanco */
 }
 
 header {
@@ -22,8 +22,8 @@ header {
 }
 
 .logo {
-    width: 150px;
-    height: auto;
+    width: 300px; /* Doble del tamaño anterior */
+    height: auto; /* Mantiene la proporción */
     margin-bottom: 20px;
 }
 
@@ -39,41 +39,24 @@ p {
     color: #CCCCCC; /* Texto en gris claro */
 }
 
+.cta {
+    position: fixed; /* Fija el botón en la parte inferior */
+    bottom: 20px; /* Distancia desde la parte inferior */
+    left: 50%; /* Centra horizontalmente */
+    transform: translateX(-50%); /* Ajusta el centrado */
+    text-align: center;
+}
+
 .cta button {
-    background-color: #4CAF50; /* Botón en verde */
+    background-color: #4CAF50; /* Verde */
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 15px 30px; /* Tamaño del botón */
+    font-size: 1.2rem; /* Tamaño del texto */
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 20px;
 }
 
 .cta button:hover {
     background-color: #45A049; /* Verde más oscuro al pasar el mouse */
-}
-
-/* Estilos para Celular */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    p {
-        font-size: 0.9rem;
-    }
-
-    .logo {
-        width: 100px;
-    }
-
-    header {
-        padding: 15px;
-    }
-
-    .cta button {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-    }
 }
