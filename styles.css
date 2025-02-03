@@ -40,11 +40,9 @@ p {
 }
 
 .cta {
-    position: fixed; /* Fija el botón en la parte inferior */
-    bottom: 20px; /* Distancia desde la parte inferior */
-    left: 50%; /* Centra horizontalmente */
-    transform: translateX(-50%); /* Ajusta el centrado */
-    text-align: center;
+    display: flex;
+    gap: 20px; /* Espacio entre botones */
+    margin-top: 20px;
 }
 
 .cta button {
