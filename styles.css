@@ -122,9 +122,16 @@ input, select, textarea {
     border: none;
 }
 
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre las opciones */
+}
+
 .checkbox-group label {
-    display: block;
-    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre el checkbox y el texto */
 }
 
 button {
