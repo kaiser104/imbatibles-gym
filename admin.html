@@ -9,10 +9,16 @@
 <body>
     <header>
         <h1>Panel de Administración</h1>
-        <p>Aquí puedes ver todos los usuarios registrados.</p>
+        <p id="userInfo">Cargando usuario...</p>
+        <button id="logoutButton">Cerrar sesión</button>
     </header>
 
-    <section class="users-section">
+    <section id="accessDenied" style="display: none;">
+        <h2>Acceso denegado</h2>
+        <p>No tienes permisos para acceder a esta página.</p>
+    </section>
+
+    <section id="adminContent" class="users-section" style="display: none;">
         <h2>Usuarios Registrados</h2>
         <ul id="usersList"></ul>
     </section>
