@@ -125,7 +125,7 @@ input, select, textarea {
 .checkbox-group {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Espacio entre las opciones */
+    gap: 1px; /* Espacio entre las opciones */
 }
 
 .checkbox-group label {
