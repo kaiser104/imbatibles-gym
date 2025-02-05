@@ -122,16 +122,17 @@ input, select, textarea {
     border: none;
 }
 
-.checkbox-group {
+..checkbox-group {
     display: flex;
     flex-direction: column;
-    gap: 1px; /* Espacio entre las opciones */
+    gap: 5px; /* Espacio entre las opciones */
+    align-items: flex-start; /* Alinea todo a la izquierda */
 }
 
 .checkbox-group label {
     display: flex;
     align-items: center;
-    gap: 1px; /* Espacio entre el checkbox y el texto */
+    gap: 10px; /* Espacio entre el checkbox y el texto */
 }
 
 button {
