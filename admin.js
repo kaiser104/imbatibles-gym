@@ -23,34 +23,40 @@ document.addEventListener("DOMContentLoaded", function () {
     const accessDenied = document.getElementById("accessDenied");
     const usersList = document.getElementById("usersList");
     const logoutButton = document.getElementById("logoutButton");
-    const filterPerfil = document.getElementById("filterPerfil");
 
-    // 🔹 Verificar si el usuario está autenticado y es administrador
+    // 🔹 Verificar si el usuario está autenticado y obtener su perfil
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            const querySnapshot = await getDocs(collection(db, "usuarios"));
-            let userFound = false;
+            try {
+                // Buscar el usuario en Firestore por su correo electrónico
+                const querySnapshot = await getDocs(collection(db, "usuarios"));
+                let userFound = false;
 
-            querySnapshot.forEach((docSnapshot) => {
-                const userData = docSnapshot.data();
-                if (userData.email === user.email) {
-                    userFound = true;
-                    userInfo.innerText = `Bienvenido, ${userData.nombres} (${userData.perfil})`;
+                querySnapshot.forEach((docSnapshot) => {
+                    const userData = docSnapshot.data();
+                    if (userData.email === user.email) {
+                        userFound = true;
+                        userInfo.innerText = `Bienvenido, ${userData.nombres} (${userData.perfil})`;
 
-                    if (userData.perfil === "administrador") {
-                        adminContent.style.display = "block";
-                        cargarUsuarios(); // Cargar lista de usuarios
-                    } else {
-                        accessDenied.style.display = "block";
+                        if (userData.perfil && userData.perfil.toLowerCase() === "administrador") {
+                            adminContent.style.display = "block";
+                            accessDenied.style.display = "none";
+                            cargarUsuarios(); // Cargar lista de usuarios
+                        } else {
+                            adminContent.style.display = "none";
+                            accessDenied.style.display = "block";
+                        }
                     }
-                }
-            });
+                });
 
-            if (!userFound) {
-                accessDenied.style.display = "block";
+                if (!userFound) {
+                    accessDenied.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Error obteniendo usuario:", error);
             }
         } else {
-            window.location.href = "index.html"; // Redirigir a index si no está autenticado
+            window.location.href = "index.html"; // Redirigir si no está autenticado
         }
     });
 
@@ -94,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const userDocRef = doc(db, "usuarios", userId);
             await updateDoc(userDocRef, { perfil: nuevoPerfil });
             alert("Perfil actualizado correctamente.");
+            cargarUsuarios(); // Recargar lista después de actualizar
         } catch (error) {
             console.error("Error al actualizar perfil:", error);
         }
@@ -121,10 +128,5 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
         }
-    });
-
-    // 🔹 Filtrar usuarios por perfil
-    filterPerfil.addEventListener("change", function () {
-        cargarUsuarios();
     });
 });
