@@ -20,6 +20,17 @@
 
     <section id="adminContent" class="users-section" style="display: none;">
         <h2>Usuarios Registrados</h2>
+        
+        <!-- 🔹 Filtro de usuarios por perfil -->
+        <label for="filterPerfil">Filtrar por perfil:</label>
+        <select id="filterPerfil">
+            <option value="todos">Todos</option>
+            <option value="usuario">Usuario</option>
+            <option value="gimnasio">Gimnasio</option>
+            <option value="entrenador">Entrenador</option>
+            <option value="administrador">Administrador</option>
+        </select>
+
         <ul id="usersList"></ul>
     </section>
 
