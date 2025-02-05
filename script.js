@@ -50,13 +50,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-.register-link {
-    font-size: 1.2rem;
-    color: #4CAF50; /* Verde */
-    text-decoration: none;
-    margin-left: 15px;
-}
-
-.register-link:hover {
-    text-decoration: underline;
-}
