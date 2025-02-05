@@ -23,10 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const accessDenied = document.getElementById("accessDenied");
     const logoutButton = document.getElementById("logoutButton");
 
-    // 🔹 Verificar si el usuario está autenticado y obtener su perfil
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // Obtener datos del usuario desde Firestore
             const querySnapshot = await getDocs(collection(db, "usuarios"));
             let userFound = false;
 
@@ -38,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (userData.perfil === "administrador") {
                         adminContent.style.display = "block";
-                        cargarUsuarios(); // Cargar lista de usuarios
+                        cargarUsuarios();
                     } else {
                         accessDenied.style.display = "block";
                     }
@@ -49,55 +47,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 accessDenied.style.display = "block";
             }
         } else {
-            window.location.href = "index.html"; // Si no está autenticado, redirigir a index
+            window.location.href = "index.html";
         }
     });
 
-    // 🔹 Cargar lista de usuarios
-    async function cargarUsuarios() {
-        const usersList = document.getElementById("usersList");
-        usersList.innerHTML = "";
-
-        try {
-            const querySnapshot = await getDocs(collection(db, "usuarios"));
-            querySnapshot.forEach((docSnapshot) => {
-                const userData = docSnapshot.data();
-                const userId = docSnapshot.id;
-
-                const li = document.createElement("li");
-                li.innerHTML = `
-                    <strong>${userData.nombres} ${userData.apellidos}</strong> - ${userData.email}
-                    <select id="perfil-${userId}">
-                        <option value="usuario" ${userData.perfil === "usuario" ? "selected" : ""}>Usuario</option>
-                        <option value="gimnasio" ${userData.perfil === "gimnasio" ? "selected" : ""}>Gimnasio</option>
-                        <option value="entrenador" ${userData.perfil === "entrenador" ? "selected" : ""}>Entrenador</option>
-                        <option value="administrador" ${userData.perfil === "administrador" ? "selected" : ""}>Administrador</option>
-                    </select>
-                    <button onclick="actualizarPerfil('${userId}')">Guardar</button>
-                `;
-
-                usersList.appendChild(li);
-            });
-        } catch (error) {
-            console.error("Error cargando usuarios:", error);
-        }
-    }
-
-    // 🔹 Actualizar perfil del usuario
-    window.actualizarPerfil = async function (userId) {
-        const select = document.getElementById(`perfil-${userId}`);
-        const nuevoPerfil = select.value;
-
-        try {
-            const userDocRef = doc(db, "usuarios", userId);
-            await updateDoc(userDocRef, { perfil: nuevoPerfil });
-            alert("Perfil actualizado correctamente.");
-        } catch (error) {
-            console.error("Error al actualizar perfil:", error);
-        }
-    };
-
-    // 🔹 Cerrar sesión
     logoutButton.addEventListener("click", async function () {
         try {
             await signOut(auth);

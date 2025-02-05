@@ -1,9 +1,7 @@
 // Importar Firebase desde la CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Configuración de Firebase (usa tus propios datos)
 const firebaseConfig = {
     apiKey: "AIzaSyCHLCYjP74kM2X4v0HvlRyyCafcW3GH-eI",
     authDomain: "imbatiblesgym-7976f.firebaseapp.com",
@@ -17,44 +15,35 @@ const firebaseConfig = {
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", function () {
-    const registerForm = document.getElementById("registerForm");
+    const loginButton = document.getElementById("loginButton");
+    const loginFormContainer = document.getElementById("loginFormContainer");
+    const loginForm = document.getElementById("loginForm");
 
-    registerForm.addEventListener("submit", async function (event) {
-        event.preventDefault(); // Evita que la página se recargue
+    // 🔹 Mostrar/Ocultar el formulario de inicio de sesión al hacer clic en "Ingresar"
+    loginButton.addEventListener("click", function () {
+        if (loginFormContainer.style.display === "none") {
+            loginFormContainer.style.display = "block";
+        } else {
+            loginFormContainer.style.display = "none";
+        }
+    });
 
-        const formData = new FormData(registerForm);
-        const email = formData.get("email");
-        const password = formData.get("password");
+    // 🔹 Manejar el inicio de sesión con Firebase Authentication
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
 
         try {
-            // Crear usuario en Firebase Authentication
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Guardar datos adicionales en Firestore
-            await addDoc(collection(db, "usuarios"), {
-                uid: user.uid, // ID único del usuario
-                nombres: formData.get("nombres"),
-                apellidos: formData.get("apellidos"),
-                tipoDocumento: formData.get("tipoDocumento"),
-                documento: formData.get("documento"),
-                email: email,
-                celular: formData.get("celular"),
-                fechaNacimiento: formData.get("fechaNacimiento"),
-                objetivo: formData.getAll("objetivo"),
-                descripcionObjetivo: formData.get("descripcionObjetivo") || "Sin descripción",
-                talla: formData.get("talla"),
-                peso: formData.get("peso")
-            });
-
-            alert("Registro exitoso. Usuario creado con email: " + email);
-            registerForm.reset(); // Limpia el formulario
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            alert("Inicio de sesión exitoso. Bienvenido " + userCredential.user.email);
+            window.location.href = "admin.html"; // Redirigir a la página de administración
         } catch (error) {
-            console.error("Error al registrar:", error);
-            alert("Error al registrar: " + error.message);
+            console.error("Error en inicio de sesión:", error);
+            alert("Error: " + error.message);
         }
     });
 });
