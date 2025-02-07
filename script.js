@@ -1,7 +1,7 @@
 // Importar Firebase desde la CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { createFFmpeg, fetchFile } from "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/+esm";
 
@@ -23,38 +23,79 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const ffmpeg = createFFmpeg({ log: true });
 
-// Función para convertir videos a GIF
+// ✅ Función para convertir videos a GIF
 async function convertVideoToGif(file) {
     if (!ffmpeg.isLoaded()) {
         await ffmpeg.load();
     }
+
     const fileName = file.name;
     ffmpeg.FS('writeFile', fileName, await fetchFile(file));
+
     await ffmpeg.run('-i', fileName, '-vf', 'scale=320:320:force_original_aspect_ratio=decrease,pad=320:320:(ow-iw)/2:(oh-ih)/2', '-t', '3', '-r', '10', 'output.gif');
+
     const data = ffmpeg.FS('readFile', 'output.gif');
-    return new Blob([data.buffer], { type: 'image/gif' });
+    const gifBlob = new Blob([data.buffer], { type: 'image/gif' });
+    return gifBlob;
 }
 
-// Ejecutar cuando la página cargue
+// ✅ Función para verificar y redirigir usuarios según su perfil
+async function checkUserRole(user) {
+    if (!user) {
+        console.log("No hay usuario autenticado.");
+        return;
+    }
+
+    const userRef = doc(db, "usuarios", user.uid);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+        const userData = userDoc.data();
+        console.log("Perfil del usuario:", userData.perfil);
+
+        if (userData.perfil && userData.perfil.toLowerCase() === "administrador") {
+            window.location.href = "admin.html"; // Redirige a admin si es administrador
+        } else {
+            console.log("El usuario no tiene perfil de administrador.");
+        }
+    } else {
+        console.log("No se encontró el usuario en Firestore.");
+    }
+}
+
+// ✅ Verificar autenticación y redirigir
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        checkUserRole(user);
+    }
+});
+
+// ✅ REGISTRO DE USUARIOS
 document.addEventListener("DOMContentLoaded", function () {
-    // 🔹 REGISTRO DE USUARIOS
     const registerForm = document.getElementById("registerForm");
     if (registerForm) {
         registerForm.addEventListener("submit", async function (event) {
             event.preventDefault();
+
+            // Obtener valores del formulario
             const nombres = document.getElementById("nombres").value;
             const apellidos = document.getElementById("apellidos").value;
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
+
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "usuarios", userCredential.user.uid), {
+                const user = userCredential.user;
+
+                await setDoc(doc(db, "usuarios", user.uid), {
                     nombres,
                     apellidos,
-                    email
+                    email,
+                    perfil: "usuario" // Se asigna por defecto como usuario
                 });
+
                 alert("Registro exitoso. ¡Bienvenido " + nombres + "!");
-                window.location.href = "index.html";
+                window.location.href = "login.html";
             } catch (error) {
                 console.error("Error en el registro:", error);
                 alert("Error: " + error.message);
@@ -62,17 +103,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🔹 INICIO DE SESIÓN
+    // ✅ INICIO DE SESIÓN
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
         loginForm.addEventListener("submit", async function (event) {
             event.preventDefault();
+
             const email = document.getElementById("loginEmail").value;
             const password = document.getElementById("loginPassword").value;
+
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                alert("Inicio de sesión exitoso. Bienvenido " + userCredential.user.email);
-                window.location.href = "admin.html";
+                alert("Inicio de sesión exitoso.");
+                checkUserRole(userCredential.user);
             } catch (error) {
                 console.error("Error en inicio de sesión:", error);
                 alert("Error: " + error.message);
@@ -80,13 +123,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🔹 CARGA DE EJERCICIOS
+    // ✅ CARGA DE EJERCICIOS
     const uploadForm = document.getElementById("uploadForm");
     const exerciseImageInput = document.getElementById("exerciseImage");
     const previewContainer = document.getElementById("gifPreview");
     const dropZone = document.getElementById("dropZone");
 
     if (uploadForm) {
+        // ✅ Mostrar vista previa antes de subir
         exerciseImageInput.addEventListener("change", async () => {
             const file = exerciseImageInput.files[0];
             if (file) {
@@ -95,30 +139,36 @@ document.addEventListener("DOMContentLoaded", function () {
                 previewContainer.innerHTML = `<img src="${gifURL}" alt="Vista previa del GIF" style="width: 320px; height: 320px;" />`;
             }
         });
-        
+
+        // ✅ Subir archivo a Firebase Storage
         uploadForm.addEventListener("submit", async (event) => {
             event.preventDefault();
+
             const file = exerciseImageInput.files[0];
             if (!file) {
                 alert("Por favor selecciona un archivo.");
                 return;
             }
+
             const gifBlob = await convertVideoToGif(file);
             const storageRef = ref(storage, `ejercicios/${file.name.replace(/\.[^/.]+$/, "")}.gif`);
             await uploadBytes(storageRef, gifBlob);
             const gifURL = await getDownloadURL(storageRef);
+
             alert("Ejercicio guardado correctamente.");
             console.log("GIF guardado en: ", gifURL);
         });
 
-        // Soporte para arrastrar y soltar archivos
+        // ✅ Soporte para arrastrar y soltar archivos
         dropZone.addEventListener("dragover", (event) => {
             event.preventDefault();
             dropZone.style.backgroundColor = "#555";
         });
+
         dropZone.addEventListener("dragleave", () => {
             dropZone.style.backgroundColor = "#444";
         });
+
         dropZone.addEventListener("drop", (event) => {
             event.preventDefault();
             dropZone.style.backgroundColor = "#444";
