@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Ejercicios</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Biblioteca de Ejercicios</h1>
+        <button id="addExerciseButton">Agregar Nuevo Ejercicio</button>
+    </header>
+
+    <section class="exercise-categories">
+        <h2>Categorías de Ejercicios</h2>
+        <ul id="categoryList">
+            <li onclick="selectCategory('Bent Leg Hip Extension')"><strong>Bent Leg Hip Extension</strong> (Extensión de cadera con pierna flexionada - Glúteos, Isquiotibiales, Zona Lumbar)</li>
+            <li onclick="selectCategory('Cardio')"><strong>Cardio</strong> (Ejercicio cardiovascular - Piernas, Core, Brazos)</li>
+            <li onclick="selectCategory('Double Leg Push')"><strong>Double Leg Push</strong> (Empuje con ambas piernas - Cuádriceps, Glúteos, Isquiotibiales)</li>
+            <li onclick="selectCategory('Core Stability')"><strong>Core Stability</strong> (Estabilidad del core - Abdominales, Oblicuos, Erector Espinal)</li>
+            <li onclick="selectCategory('Auxiliary')"><strong>Auxiliary</strong> (Ejercicios auxiliares - Hombros, Bíceps, Tríceps, Antebrazos, Trapecios)</li>
+            <li onclick="selectCategory('Mobility')"><strong>Mobility</strong> (Movilidad - Caderas, Hombros, Columna)</li>
+            <li onclick="selectCategory('Explosive')"><strong>Explosive</strong> (Ejercicios explosivos - Cuádriceps, Glúteos, Hombros, Core)</li>
+            <li onclick="selectCategory('Horizontal Push')"><strong>Horizontal Push</strong> (Empuje horizontal - Pectorales, Deltoides Anteriores, Tríceps)</li>
+            <li onclick="selectCategory('Straight Leg Hip Extension')"><strong>Straight Leg Hip Extension</strong> (Extensión de cadera con pierna recta - Glúteos, Isquiotibiales, Zona Lumbar)</li>
+            <li onclick="selectCategory('Downward Pull')"><strong>Downward Pull</strong> (Tirón hacia abajo - Dorsales, Bíceps, Trapecios, Romboides)</li>
+            <li onclick="selectCategory('Upward Pull')"><strong>Upward Pull</strong> (Tirón hacia arriba - Dorsales, Trapecios, Bíceps, Romboides)</li>
+            <li onclick="selectCategory('Upward Push')"><strong>Upward Push</strong> (Empuje hacia arriba - Deltoides, Tríceps, Trapecios)</li>
+            <li onclick="selectCategory('Single Leg Push')"><strong>Single Leg Push</strong> (Empuje con una sola pierna - Cuádriceps, Glúteos, Isquiotibiales, Core)</li>
+            <li onclick="selectCategory('Horizontal Pull')"><strong>Horizontal Pull</strong> (Tirón horizontal - Dorsales, Trapecios, Romboides, Bíceps)</li>
+        </ul>
+    </section>
+
+    <section class="exercise-list" id="exerciseList">
+        <h2>Ejercicios de la Categoría Seleccionada</h2>
+        <div id="exerciseContainer"></div>
+    </section>
+
+    <section class="exercise-upload" id="exerciseUpload" style="display: none;">
+        <h2>Subir Nuevo Ejercicio</h2>
+        <form id="uploadForm">
+            <label for="exerciseName">Nombre del Ejercicio:</label>
+            <input type="text" id="exerciseName" name="exerciseName" required>
+
+            <label for="exerciseCategory">Categoría:</label>
+            <select id="exerciseCategory" name="exerciseCategory" required></select>
+
+            <label for="exerciseImage">Subir Imagen o Video:</label>
+            <input type="file" id="exerciseImage" name="exerciseImage" accept="image/*,video/*" required>
+
+            <div id="dropZone">Arrastra y suelta archivos aquí o haz clic para seleccionarlos</div>
+
+            <button type="submit">Subir Ejercicio</button>
+        </form>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

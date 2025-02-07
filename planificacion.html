@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificación de Entrenamiento</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Planificación de Entrenamiento</h1>
+        <button id="newPlanButton" onclick="toggleForm()">Crear Nuevo Plan</button>
+        <button id="viewUsersButton">Ver Usuarios</button>
+        <button id="viewSavedPlansButton" onclick="window.location.href='planes_guardados.html'">Ver Planes Guardados</button>
+    </header>
+
+    <section class="plan-form" id="planFormContainer" style="display: none;">
+        <h2>Configuración del Plan</h2>
+        <form id="planForm">
+            <label for="planName">Nombre del Plan:</label>
+            <input type="text" id="planName" name="planName" required>
+
+            <label for="planObjective">Objetivo del Entrenamiento:</label>
+            <select id="planObjective" name="planObjective" required>
+                <option value="masa">Aumento de Masa Muscular</option>
+                <option value="definicion">Definición</option>
+                <option value="salud">Salud</option>
+                <option value="otro">Otro</option>
+            </select>
+
+            <label for="planDuration">Duración del Programa (semanas):</label>
+            <select id="planDuration" name="planDuration" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+
+            <label for="trainingDays">Días de Entrenamiento por Semana:</label>
+            <input type="number" id="trainingDays" name="trainingDays" min="1" max="7" required>
+
+            <label for="exercisesPerSession">Cantidad de Ejercicios por Sesión:</label>
+            <input type="number" id="exercisesPerSession" name="exercisesPerSession" min="4" max="12" required>
+
+            <label>Zonas del Cuerpo Objetivo:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="bodyZones" value="espalda"> Espalda</label>
+                <label><input type="checkbox" name="bodyZones" value="hombros"> Hombros</label>
+                <label><input type="checkbox" name="bodyZones" value="pecho"> Pecho</label>
+                <label><input type="checkbox" name="bodyZones" value="core"> Core</label>
+                <label><input type="checkbox" name="bodyZones" value="brazos"> Brazos</label>
+                <label><input type="checkbox" name="bodyZones" value="gluteos"> Glúteos</label>
+                <label><input type="checkbox" name="bodyZones" value="muslos"> Muslos</label>
+                <label><input type="checkbox" name="bodyZones" value="pantorrilla"> Pantorrilla</label>
+            </div>
+            <button type="submit">Guardar Plan</button>
+        </form>
+    </section>
+
+    <script>
+        function toggleForm() {
+            var formContainer = document.getElementById("planFormContainer");
+            if (formContainer.style.display === "none" || formContainer.style.display === "") {
+                formContainer.style.display = "block";
+            } else {
+                formContainer.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
