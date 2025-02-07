@@ -58,6 +58,8 @@ async function checkUserRole(user) {
             window.location.href = "admin.html"; // Redirige a admin si es administrador
         } else {
             console.log("El usuario no tiene perfil de administrador.");
+            // Redirigir a otra página si no es administrador
+            window.location.href = "index.html"; // Cambia esto según tu lógica
         }
     } else {
         console.log("No se encontró el usuario en Firestore.");
@@ -67,7 +69,12 @@ async function checkUserRole(user) {
 // ✅ Verificar autenticación y redirigir
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        console.log("Usuario autenticado:", user.uid); // Depuración: Verificar autenticación
         checkUserRole(user);
+    } else {
+        console.log("No hay usuario autenticado.");
+        // Redirigir a la página de inicio de sesión si no hay usuario autenticado
+        window.location.href = "index.html"; // Cambia esto según tu lógica
     }
 });
 
