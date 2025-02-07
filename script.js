@@ -51,9 +51,10 @@ async function checkUserRole(user) {
 
     if (userDoc.exists()) {
         const userData = userDoc.data();
-        console.log("Perfil del usuario:", userData.perfil);
+        console.log("Datos del usuario:", userData); // Depuración: Ver todos los datos del usuario
 
         if (userData.perfil && userData.perfil.toLowerCase() === "administrador") {
+            console.log("Redirigiendo a admin.html"); // Depuración: Verificar redirección
             window.location.href = "admin.html"; // Redirige a admin si es administrador
         } else {
             console.log("El usuario no tiene perfil de administrador.");
@@ -80,17 +81,34 @@ document.addEventListener("DOMContentLoaded", function () {
             // Obtener valores del formulario
             const nombres = document.getElementById("nombres").value;
             const apellidos = document.getElementById("apellidos").value;
+            const tipoDocumento = document.getElementById("tipoDocumento").value;
+            const documento = document.getElementById("documento").value;
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
+            const celular = document.getElementById("celular").value;
+            const fechaNacimiento = document.getElementById("fechaNacimiento").value;
+            const objetivo = Array.from(document.querySelectorAll('input[name="objetivo"]:checked')).map(input => input.value);
+            const descripcionObjetivo = document.getElementById("descripcionObjetivo").value;
+            const talla = document.getElementById("talla").value;
+            const peso = document.getElementById("peso").value;
 
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
+                // Guardar todos los datos del usuario en Firestore
                 await setDoc(doc(db, "usuarios", user.uid), {
                     nombres,
                     apellidos,
+                    tipoDocumento,
+                    documento,
                     email,
+                    celular,
+                    fechaNacimiento,
+                    objetivo,
+                    descripcionObjetivo,
+                    talla,
+                    peso,
                     perfil: "usuario" // Se asigna por defecto como usuario
                 });
 
@@ -115,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 alert("Inicio de sesión exitoso.");
-                checkUserRole(userCredential.user);
+                checkUserRole(userCredential.user); // Verificar el rol y redirigir
             } catch (error) {
                 console.error("Error en inicio de sesión:", error);
                 alert("Error: " + error.message);
