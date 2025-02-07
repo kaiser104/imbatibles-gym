@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 alert("Inicio de sesión exitoso.");
+                console.log("Usuario autenticado:", userCredential.user.uid); // Depuración
                 checkUserRole(userCredential.user); // Verificar el rol y redirigir
             } catch (error) {
                 console.error("Error en inicio de sesión:", error);
