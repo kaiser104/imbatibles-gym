@@ -18,7 +18,7 @@
         <a href="register.html" class="register-link">Registrarse</a>
     </section>
 
-    <!-- 🔹 Formulario de inicio de sesión (inicialmente oculto) -->
+    <!-- 🔹 Formulario de inicio de sesión (ahora se muestra correctamente) -->
     <section id="loginFormContainer" style="display: none;">
         <form id="loginForm">
             <label for="loginEmail">Correo Electrónico:</label>
@@ -30,6 +30,13 @@
             <button type="submit">Ingresar</button>
         </form>
     </section>
+
+    <script>
+        document.getElementById("loginButton").addEventListener("click", function () {
+            let formContainer = document.getElementById("loginFormContainer");
+            formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+        });
+    </script>
 
     <script type="module" src="script.js"></script>
 </body>
