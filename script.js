@@ -23,48 +23,26 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const ffmpeg = createFFmpeg({ log: true });
 
-// ✅ Función para convertir videos a GIF
-async function convertVideoToGif(file) {
-    if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load();
-    }
+// UID del usuario administrador
+const ADMIN_UID = "8TLn84KxyVgnzlseCiDiemIwCwI3";
 
-    const fileName = file.name;
-    ffmpeg.FS('writeFile', fileName, await fetchFile(file));
-
-    await ffmpeg.run('-i', fileName, '-vf', 'scale=320:320:force_original_aspect_ratio=decrease,pad=320:320:(ow-iw)/2:(oh-ih)/2', '-t', '3', '-r', '10', 'output.gif');
-
-    const data = ffmpeg.FS('readFile', 'output.gif');
-    const gifBlob = new Blob([data.buffer], { type: 'image/gif' });
-    return gifBlob;
-}
-
-// ✅ Función para verificar y redirigir usuarios según su perfil
+// ✅ Función para verificar y redirigir usuarios según su UID
 async function checkUserRole(user) {
     if (!user) {
         console.log("No hay usuario autenticado.");
         return;
     }
 
-    console.log("Usuario autenticado. Verificando perfil..."); // Depuración
+    console.log("Usuario autenticado. Verificando UID..."); // Depuración
+    console.log("UID del usuario:", user.uid); // Depuración: Verificar el UID
 
-    const userRef = doc(db, "usuarios", user.uid);
-    const userDoc = await getDoc(userRef);
-
-    if (userDoc.exists()) {
-        const userData = userDoc.data();
-        console.log("Datos del usuario:", userData); // Depuración: Ver todos los datos del usuario
-
-        if (userData.perfil && userData.perfil.toLowerCase() === "administrador") {
-            console.log("Redirigiendo a admin.html"); // Depuración: Verificar redirección
-            window.location.href = "admin.html"; // Redirige a admin si es administrador
-        } else {
-            console.log("El usuario no tiene perfil de administrador.");
-            // Redirigir a otra página si no es administrador
-            window.location.href = "index.html"; // Cambia esto según tu lógica
-        }
+    if (user.uid === ADMIN_UID) {
+        console.log("Redirigiendo a admin.html"); // Depuración: Verificar redirección
+        window.location.href = "admin.html"; // Redirige a admin si es el UID correcto
     } else {
-        console.log("No se encontró el usuario en Firestore.");
+        console.log("El usuario no es administrador.");
+        // Redirigir a otra página si no es administrador
+        window.location.href = "index.html"; // Cambia esto según tu lógica
     }
 }
 
