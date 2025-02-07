@@ -46,6 +46,8 @@ async function checkUserRole(user) {
         return;
     }
 
+    console.log("Usuario autenticado. Verificando perfil..."); // Depuración
+
     const userRef = doc(db, "usuarios", user.uid);
     const userDoc = await getDoc(userRef);
 
